@@ -48,6 +48,9 @@ let upgrade = {
 	tail5X:    442,
 	tail5Y:    100,
 	color:     COLOR_WHITE,
+	status:    true,
+	del:       false,
+	move:      -0.3,
 }
 
 //Описание цветов обьектов
@@ -345,9 +348,14 @@ function update() {
 
 	renderIterations.iteration++;
 	if(renderIterations.iteration == 1000) renderIterations.iteration = 0;
-	
+
 	if (menuStatus) {
 		mainMenu();
+
+		if (upgrade.status) {
+      if(upgrade.tail1Y >= 103 || upgrade.tail1Y <= 97) upgrade.move *= -1;
+			upgrade.tail1Y += upgrade.move;
+		}
 	} else {
 	// Движение звезд на заднем плане
 	for(i in stars) {
