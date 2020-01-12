@@ -50,7 +50,7 @@ let upgrade = {
 	color:     COLOR_WHITE,
 	status:    true,
 	del:       false,
-	move:      -0.3,
+	move:      -0.6,
 }
 
 //Описание цветов обьектов
@@ -353,8 +353,28 @@ function update() {
 		mainMenu();
 
 		if (upgrade.status) {
-      if(upgrade.tail1Y >= 103 || upgrade.tail1Y <= 97) upgrade.move *= -1;
+      if(upgrade.tail1Y >= 104 || upgrade.tail1Y <= 96) upgrade.move *= -1;
 			upgrade.tail1Y += upgrade.move;
+			if(upgrade.tail2Y > upgrade.tail1Y) {
+				upgrade.tail2Y -= 0.5;
+			} else if(upgrade.tail2Y < upgrade.tail1Y){
+				upgrade.tail2Y += 0.5;
+			}
+			if(upgrade.tail3Y > upgrade.tail2Y) {
+				upgrade.tail3Y -= 0.4;
+			} else if(upgrade.tail3Y < upgrade.tail2Y){
+				upgrade.tail3Y += 0.4;
+			}
+			if(upgrade.tail4Y > upgrade.tail3Y) {
+				upgrade.tail4Y -= 0.3;
+			} else if(upgrade.tail4Y < upgrade.tail3Y){
+				upgrade.tail4Y += 0.3;
+			}
+			if(upgrade.tail5Y > upgrade.tail4Y) {
+				upgrade.tail5Y -= 0.2;
+			} else if(upgrade.tail5Y < upgrade.tail4Y){
+				upgrade.tail5Y += 0.2;
+			}
 		}
 	} else {
 	// Движение звезд на заднем плане
