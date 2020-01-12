@@ -2,7 +2,7 @@ const COLOR_BLACK    = "#000000";
 const COLOR_WHITE    = "#FFFFFF";
 const COLOR_GRAY     = "#666666";
 const COLOR_GREEN    = "#00FF00";
-const COLOR_RED		   = "#FF0000";
+const COLOR_RED      = "#FF0000";
 const COLOR_DARK_RED = "#8B0000";
 const COLOR_ORANGE   = "#FF8C00";
 
@@ -34,25 +34,9 @@ let numberOfAidKit = 1;
 let aidKit = [];
 
 let fire = [];
-let upgrade = {
-	startY:    100,
-	headX:     400,
-	headY:     100,
-	tail1X:    414,
-	tail1Y:    100,
-	tail2X:    424,
-	tail2Y:    100,
-	tail3X:    432,
-	tail3Y:    100,
-	tail4X:    438,
-	tail4Y:    100,
-	tail5X:    442,
-	tail5Y:    100,
-	color:     COLOR_GRAY,
-	status:    true,
-	del:       false,
-	move:      -0.6,
-}
+
+let numberOfUpgrade = 2;
+let upgrade = [];
 
 //Описание цветов обьектов
 let colorSpaceship = COLOR_WHITE;
@@ -104,6 +88,32 @@ function initialization() {
 		del:	          false, // флаг. Если true, то обьект помечен для удаленя
 	}
 }
+
+  for (let i=0, j = canvas.width / numberOfUpgrade; i<numberOfUpgrade; i++) {
+		upgrade[i] = {
+	    startY:         randomeInteger(10, canvas.height - 10),
+	    headX:          canvas.width + 20,
+	    color:          COLOR_GRAY,
+			appearanceTime: j * i + 1,
+	    status:         false,
+	    del:            false,
+	    move:           -0.6,
+			speed:          1,
+    };
+
+		upgrade[i].headY  = upgrade[i].startY;
+		upgrade[i].tail1Y = upgrade[i].startY;
+		upgrade[i].tail2Y = upgrade[i].startY;
+		upgrade[i].tail3Y = upgrade[i].startY;
+		upgrade[i].tail4Y = upgrade[i].startY;
+		upgrade[i].tail5Y = upgrade[i].startY;
+		upgrade[i].tail1X = upgrade[i].headX + 14;
+		upgrade[i].tail2X = upgrade[i].headX + 24;
+		upgrade[i].tail3X = upgrade[i].headX + 32;
+		upgrade[i].tail4X = upgrade[i].headX + 38;
+		upgrade[i].tail5X = upgrade[i].headX + 42;
+
+	}
 
   for(let i=0, j = canvas.width / numberOfAidKit; i < numberOfAidKit; i++) {
     aidKit[i] =  {
@@ -194,33 +204,35 @@ function levelComplete() {
 }
 
 function drawUpgrade() {
-	ctx.beginPath();
-	ctx.moveTo(upgrade.headX, upgrade.headY);
-	ctx.lineTo(upgrade.headX + 7, upgrade.headY - 6);
-	ctx.lineTo(upgrade.headX + 7, upgrade.headY + 6);
-	ctx.lineTo(upgrade.headX, upgrade.headY);
-	ctx.closePath();
-	ctx.fillStyle = COLOR_GREEN;
-	ctx.fill();
-	ctx.lineWidth = 1.2;
-	ctx.strokeStyle = COLOR_WHITE;
-	ctx.stroke();
-	ctx.fillStyle = upgrade.color;
-	ctx.beginPath();
-	ctx.arc(upgrade.tail1X, upgrade.tail1Y, 5, 0, Math.PI*2, true);
-	ctx.fill();
-	ctx.beginPath();
-	ctx.arc(upgrade.tail2X, upgrade.tail2Y, 4, 0, Math.PI*2, true);
-	ctx.fill();
-	ctx.beginPath();
-	ctx.arc(upgrade.tail3X, upgrade.tail3Y, 3, 0, Math.PI*2, true);
-	ctx.fill();
-	ctx.beginPath();
-	ctx.arc(upgrade.tail4X, upgrade.tail4Y, 2, 0, Math.PI*2, true);
-	ctx.fill();
-	ctx.beginPath();
-	ctx.arc(upgrade.tail5X, upgrade.tail5Y, 1, 0, Math.PI*2, true);
-	ctx.fill();
+  for(i in upgrade) {
+		ctx.beginPath();
+  	ctx.moveTo(upgrade[i].headX, upgrade[i].headY);
+  	ctx.lineTo(upgrade[i].headX + 7, upgrade[i].headY - 6);
+  	ctx.lineTo(upgrade[i].headX + 7, upgrade[i].headY + 6);
+  	ctx.lineTo(upgrade[i].headX, upgrade[i].headY);
+  	ctx.closePath();
+  	ctx.fillStyle = COLOR_GREEN;
+  	ctx.fill();
+  	ctx.lineWidth = 1.2;
+	  ctx.strokeStyle = COLOR_WHITE;
+	  ctx.stroke();
+	  ctx.fillStyle = upgrade[i].color;
+	  ctx.beginPath();
+	  ctx.arc(upgrade[i].tail1X, upgrade[i].tail1Y, 5, 0, Math.PI*2, true);
+	  ctx.fill();
+	  ctx.beginPath();
+	  ctx.arc(upgrade[i].tail2X, upgrade[i].tail2Y, 4, 0, Math.PI*2, true);
+	  ctx.fill();
+	  ctx.beginPath();
+	  ctx.arc(upgrade[i].tail3X, upgrade[i].tail3Y, 3, 0, Math.PI*2, true);
+	  ctx.fill();
+	  ctx.beginPath();
+	  ctx.arc(upgrade[i].tail4X, upgrade[i].tail4Y, 2, 0, Math.PI*2, true);
+	  ctx.fill();
+	  ctx.beginPath();
+	  ctx.arc(upgrade[i].tail5X, upgrade[i].tail5Y, 1, 0, Math.PI*2, true);
+	  ctx.fill();
+  }
 }
 
 function drawMenu() {
@@ -352,36 +364,6 @@ function update() {
 
 	if (menuStatus) {
 		mainMenu();
-
-		if (upgrade.status) {
-      if(upgrade.headY >= upgrade.startY + 5 || upgrade.headY <= upgrade.startY - 5) upgrade.move *= -1;
-			upgrade.headY += upgrade.move;
-			if(upgrade.tail1Y > upgrade.headY) {
-				upgrade.tail1Y -= 0.6;
-			} else if(upgrade.tail1Y < upgrade.headY){
-				upgrade.tail1Y += 0.6;
-			}
-			if(upgrade.tail2Y > upgrade.tail1Y) {
-				upgrade.tail2Y -= 0.5;
-			} else if(upgrade.tail2Y < upgrade.tail1Y){
-				upgrade.tail2Y += 0.5;
-			}
-			if(upgrade.tail3Y > upgrade.tail2Y) {
-				upgrade.tail3Y -= 0.4;
-			} else if(upgrade.tail3Y < upgrade.tail2Y){
-				upgrade.tail3Y += 0.4;
-			}
-			if(upgrade.tail4Y > upgrade.tail3Y) {
-				upgrade.tail4Y -= 0.3;
-			} else if(upgrade.tail4Y < upgrade.tail3Y){
-				upgrade.tail4Y += 0.3;
-			}
-			if(upgrade.tail5Y > upgrade.tail4Y) {
-				upgrade.tail5Y -= 0.2;
-			} else if(upgrade.tail5Y < upgrade.tail4Y){
-				upgrade.tail5Y += 0.2;
-			}
-		}
 	} else {
 	// Движение звезд на заднем плане
 	for(i in stars) {
@@ -441,6 +423,57 @@ function update() {
 		if (asteroids[i].del) asteroids.splice(i,1);
 	} // Конец перебора астероидов
 
+// Перебор юнитов бонус-upgrade
+  for(i in upgrade) {
+
+		if (!upgrade[i].status && upgrade[i].appearanceTime == time.value) {
+			upgrade[i].status = true;
+		}
+		if (upgrade[i].status) {
+		  if(upgrade[i].headY >= upgrade[i].startY + 5 || upgrade[i].headY <= upgrade[i].startY - 5) upgrade[i].move *= -1;
+		  upgrade[i].headY += upgrade[i].move;
+		  if(upgrade[i].tail1Y > upgrade[i].headY) {
+			  upgrade[i].tail1Y -= 0.6;
+		  } else if(upgrade[i].tail1Y < upgrade[i].headY){
+			  upgrade[i].tail1Y += 0.6;
+	  	}
+	  	if(upgrade[i].tail2Y > upgrade[i].tail1Y) {
+  			upgrade[i].tail2Y -= 0.5;
+  		} else if(upgrade[i].tail2Y < upgrade[i].tail1Y){
+  			upgrade[i].tail2Y += 0.5;
+  		}
+	  	if(upgrade[i].tail3Y > upgrade[i].tail2Y) {
+		  	upgrade[i].tail3Y -= 0.4;
+	  	} else if(upgrade[i].tail3Y < upgrade[i].tail2Y){
+	  		upgrade[i].tail3Y += 0.4;
+  		}
+  		if(upgrade[i].tail4Y > upgrade[i].tail3Y) {
+  			upgrade[i].tail4Y -= 0.3;
+	  	} else if(upgrade[i].tail4Y < upgrade[i].tail3Y){
+	  		upgrade[i].tail4Y += 0.3;
+	  	}
+	  	if(upgrade[i].tail5Y > upgrade[i].tail4Y) {
+	  		upgrade[i].tail5Y -= 0.2;
+  		} else if(upgrade[i].tail5Y < upgrade[i].tail4Y){
+    		upgrade[i].tail5Y += 0.2;
+	  	}
+
+			upgrade[i].headX  -= upgrade[i].speed;
+			upgrade[i].tail1X -= upgrade[i].speed;
+			upgrade[i].tail2X -= upgrade[i].speed;
+			upgrade[i].tail3X -= upgrade[i].speed;
+			upgrade[i].tail4X -= upgrade[i].speed;
+			upgrade[i].tail5X -= upgrade[i].speed;
+
+			if (upgrade[i].headX == -60) upgrade[i].del = true;
+  	}
+
+		if(upgrade[i].del) upgrade.splice(i,1);
+	}
+
+
+	// Конец перебора юнитов бонус-upgrade
+
   // Перебор аптечек
 	for(i in aidKit) {
 		if (aidKit[i].status) {
@@ -498,7 +531,6 @@ function draw() {
 
 		if (menuStatus) {
 			drawMenu();
-			drawUpgrade();
 		} else if (gameOverStatus) {
 			gameover();
 		} else if (levelCompleteStatus) {
@@ -508,6 +540,7 @@ function draw() {
 			drawSpaceship();
 			drawTextScore();
 			drawTextHelth();
+			drawUpgrade();
 		}
 } // function draw()
 
