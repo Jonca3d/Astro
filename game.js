@@ -35,6 +35,7 @@ let aidKit = [];
 
 let fire = [];
 let upgrade = {
+	startY:    100,
 	headX:     400,
 	headY:     100,
 	tail1X:    414,
@@ -47,7 +48,7 @@ let upgrade = {
 	tail4Y:    100,
 	tail5X:    442,
 	tail5Y:    100,
-	color:     COLOR_WHITE,
+	color:     COLOR_GRAY,
 	status:    true,
 	del:       false,
 	move:      -0.6,
@@ -204,7 +205,7 @@ function drawUpgrade() {
 	ctx.lineWidth = 1.2;
 	ctx.strokeStyle = COLOR_WHITE;
 	ctx.stroke();
-	ctx.fillStyle = COLOR_WHITE;
+	ctx.fillStyle = upgrade.color;
 	ctx.beginPath();
 	ctx.arc(upgrade.tail1X, upgrade.tail1Y, 5, 0, Math.PI*2, true);
 	ctx.fill();
@@ -353,8 +354,13 @@ function update() {
 		mainMenu();
 
 		if (upgrade.status) {
-      if(upgrade.tail1Y >= 104 || upgrade.tail1Y <= 96) upgrade.move *= -1;
-			upgrade.tail1Y += upgrade.move;
+      if(upgrade.headY >= upgrade.startY + 5 || upgrade.headY <= upgrade.startY - 5) upgrade.move *= -1;
+			upgrade.headY += upgrade.move;
+			if(upgrade.tail1Y > upgrade.headY) {
+				upgrade.tail1Y -= 0.6;
+			} else if(upgrade.tail1Y < upgrade.headY){
+				upgrade.tail1Y += 0.6;
+			}
 			if(upgrade.tail2Y > upgrade.tail1Y) {
 				upgrade.tail2Y -= 0.5;
 			} else if(upgrade.tail2Y < upgrade.tail1Y){
