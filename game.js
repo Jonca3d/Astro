@@ -44,10 +44,11 @@ let colorSpaceship = COLOR_WHITE;
 let score = 0;
 
 let spaceship = {
-	x:			40,
-	y: 			100,
-	color: 	COLOR_WHITE,
-	helth:	1,
+	x:			     40,
+	y: 			     100,
+	color:     	 COLOR_WHITE,
+	helth:	     1,
+	numberOfGun: 4,
 }
 
 function restartGame() {
@@ -499,14 +500,18 @@ function update() {
 
 	// Генерация пуль
 	if(renderIterations.iteration % 60 == 0 && gameOverStatus == false) {
-		fire.push({x: spaceship.x + 50, y: spaceship.y, dx: 3})
+	//	fire.push({x: spaceship.x + 50, y: spaceship.y, dx: 3});
+
+		for(let i=0, j = spaceship.y - 3 * (spaceship.numberOfGun - 1); i<spaceship.numberOfGun; i++, j+=6) {
+			fire.push({x: spaceship.x + 50, y: j, dx: 10});
+		}
 	}
 
   // Удаление пуль
 	for(i in fire) {
 		fire[i].x += fire[i].dx;
 		if(fire[i].x > canvas.width + 10) {
-		fire.splice(i,1);
+		  fire.splice(i,1);
 		}
 	}
 
