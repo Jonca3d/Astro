@@ -48,7 +48,7 @@ let spaceship = {
 	y: 			     100,
 	color:     	 COLOR_WHITE,
 	helth:	     1,
-	numberOfGun: 4,
+	numberOfGun: 1,
 }
 
 function restartGame() {
@@ -469,10 +469,17 @@ function update() {
 			if (upgrade[i].headX == -60) upgrade[i].del = true;
   	}
 
+    if(upgrade[i].headX < spaceship.x + 50
+		   && upgrade[i].headX + 40 > spaceship.x
+		   && upgrade[i].headY + 6 > spaceship.y - 10
+		   && upgrade[i].headY - 6 < spaceship.y + 10
+		   && upgrade[i].status) {
+				 spaceship.numberOfGun++;
+				 upgrade[i].del = true;
+			 }
+
 		if(upgrade[i].del) upgrade.splice(i,1);
-	}
-
-
+	} // Конец перебора бонуса upgrade
 	// Конец перебора юнитов бонус-upgrade
 
   // Перебор аптечек
