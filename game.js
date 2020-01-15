@@ -133,8 +133,12 @@ function initialization() {
 //Привязываем центр коробля к оси Y курсора
 function mouseMoveHandler(e) {
 	let relativeY = e.clientY - canvas.offsetTop;
+	let relativeX = e.clientX - canvas.offsetLeft;
 	if(relativeY > 0 && relativeY < canvas.height - 12) {
 		spaceship.y = relativeY;
+	}
+	if(relativeX > 0 && relativeX < canvas.width - 10) {
+		spaceship.x = relativeX;
 	}
 }
 
