@@ -249,6 +249,48 @@ function drawUpgrade() {
   }
 }
 
+function drawBonusSpeed() {
+  if(bonusSpeed.length > 0) {
+		for(i in bonusSpeed) {
+			ctx.beginPath();
+			ctx.arc(bonusSpeed[i].x, bonusSpeed[i].y, 40, 0, Math.PI*2, true);
+			ctx.stroke();
+
+			ctx.font = "22px Arial";
+			ctx.fillStyle = COLOR_WHITE;
+			ctx.fillText("S", bonusSpeed[i].x, bonusSpeed[i].y);
+		}
+	}
+}
+
+function drawBonusAngle() {
+	if(bonusAngle.length > 0) {
+		for(i in bonusAngle) {
+			ctx.beginPath();
+			ctx.arc(bonusAngle[i].x, bonusAngle[i].y, 40, 0, Math.PI*2, true);
+			ctx.stroke();
+
+			ctx.font = "22px Arial";
+			ctx.fillStyle = COLOR_WHITE;
+			ctx.fillText("A", bonusAngle[i].x, bonusAngle[i].y);
+		}
+	}
+}
+
+function drawBonusFrequency() {
+	if(bonusFrequency.length > 0) {
+		for(i in bonusAngle) {
+			ctx.beginPath();
+			ctx.arc(bonusFrequency[i].x, bonusFrequency[i].y, 40, 0, Math.PI*2, true);
+			ctx.stroke();
+
+			ctx.font = "22px Arial";
+			ctx.fillStyle = COLOR_WHITE;
+			ctx.fillText("F", bonusFrequency[i].x, bonusFrequency[i].y);
+		}
+	}
+}
+
 function drawMenu() {
 	let menuCoordinates = canvas.height/2 - menu.length * 30;
 	ctx.fillStyle = "rgba(0,0,0,0.6)"
