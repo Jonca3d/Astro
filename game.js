@@ -38,6 +38,10 @@ let fire = [];
 let numberOfUpgrade = 2;
 let upgrade = [];
 
+let bonusSpeed = [];
+let bonusFrequency = [];
+let bonusAngle = [];
+
 //Описание цветов обьектов
 let colorSpaceship = COLOR_WHITE;
 
@@ -49,6 +53,7 @@ let spaceship = {
 	color:     	 COLOR_WHITE,
 	helth:	     1,
 	numberOfGun: 1,
+	luck:        50, // Вероятность выпадения бонуса после уничтожения врага
 }
 
 function restartGame() {
@@ -202,6 +207,10 @@ function gameover() {
 	ctx.font = "60px Arial";
 	ctx.fillStyle = COLOR_DARK_RED;
 	ctx.fillText("GAME_OVER", 100, 100);
+}
+
+function chance() {
+	return randomeInteger(1,100) < spaceship.luck;
 }
 
 function levelComplete() {
@@ -417,6 +426,20 @@ function update() {
 				    asteroids[i].helth -= 1;
 				    if(asteroids[i].helth < 1) {
 					    asteroids[i].del = true;
+							if(chance) {
+                switch (randomeInteger(1,3)) {
+                	case 1:
+                		bonusSpeed.push({x: asteroids[i].x, y: asteroids[i].y, dx: randomeInteger(3,6)});
+                		break;
+									case 2:
+									  bonusAngle.push({x: asteroids[i].x, y: asteroids[i].y, dx: randomeInteger(3,6)});
+										break;
+									case 3:
+									  bonusFrequency.push({x: asteroids[i].x, y: asteroids[i].y, dx: randomeInteger(3,6)});
+                	default:
+                    break;
+                }
+							}
 					    score++;
 				    }
 				    fire.splice(j,1);break;
