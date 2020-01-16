@@ -12,7 +12,7 @@ let ctx    =  canvas.getContext("2d");
 // Переменные для работы с Progressbar
 let time             =  { value: 0 }; // Относительное игровое время. Значение time соответствует длине Progressbar в пикселях
 let renderIterations =  { iteration: 0 }; // Подсчитывает количество перерисовок canvas
-let levelLength      =  1; // Значение влияет на скорость заполнения Progressbar. Чем выше значение тем медленее заполняется шкала
+let levelLength      =  50; // Значение влияет на скорость заполнения Progressbar. Чем выше значение тем медленее заполняется шкала
 
 let menu             =  ["Start / Resume", "Restart", "Exit"];
 let selectedMenuItem =  0;
@@ -27,7 +27,7 @@ let levelCompleteStatus =  false;
 let numberOfStars = 10;
 let stars = [];
 
-let numberOfAsteroids = 1;
+let numberOfAsteroids = 100;
 let asteroids =[];
 
 let numberOfAidKit = 1;
@@ -51,8 +51,8 @@ let spaceship = {
 	x:			     40,
 	y: 			     100,
 	color:     	 COLOR_WHITE,
-	helth:	     1,
-	numberOfGun: 1,
+	helth:	     100,
+	numberOfGun: 4,
 	luck:        50, // Вероятность выпадения бонуса после уничтожения врага
 }
 
@@ -252,8 +252,9 @@ function drawUpgrade() {
 function drawBonusSpeed() {
   if(bonusSpeed.length > 0) {
 		for(i in bonusSpeed) {
+			ctx.strokeStyle = COLOR_WHITE;
 			ctx.beginPath();
-			ctx.arc(bonusSpeed[i].x, bonusSpeed[i].y, 40, 0, Math.PI*2, true);
+			ctx.arc(bonusSpeed[i].x, bonusSpeed[i].y, 20, 0, Math.PI*2, true);
 			ctx.stroke();
 
 			ctx.font = "22px Arial";
@@ -266,8 +267,9 @@ function drawBonusSpeed() {
 function drawBonusAngle() {
 	if(bonusAngle.length > 0) {
 		for(i in bonusAngle) {
+			ctx.strokeStyle = COLOR_WHITE;
 			ctx.beginPath();
-			ctx.arc(bonusAngle[i].x, bonusAngle[i].y, 40, 0, Math.PI*2, true);
+			ctx.arc(bonusAngle[i].x, bonusAngle[i].y, 20, 0, Math.PI*2, true);
 			ctx.stroke();
 
 			ctx.font = "22px Arial";
@@ -280,8 +282,9 @@ function drawBonusAngle() {
 function drawBonusFrequency() {
 	if(bonusFrequency.length > 0) {
 		for(i in bonusAngle) {
+			ctx.strokeStyle = COLOR_WHITE;
 			ctx.beginPath();
-			ctx.arc(bonusFrequency[i].x, bonusFrequency[i].y, 40, 0, Math.PI*2, true);
+			ctx.arc(bonusFrequency[i].x, bonusFrequency[i].y, 20, 0, Math.PI*2, true);
 			ctx.stroke();
 
 			ctx.font = "22px Arial";
@@ -608,6 +611,9 @@ function draw() {
 		drawAsteroids();
 		drawFire();
 		drawAidKit();
+		drawBonusAngle();
+		drawBonusSpeed();
+		drawBonusFrequency();
 		drawProgressbar(time.value);
 
 		if (menuStatus) {
