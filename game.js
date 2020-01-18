@@ -53,7 +53,7 @@ let spaceship = {
 	color:     	 COLOR_WHITE,
 	helth:	     100,
 	numberOfGun: 4,
-	luck:        50, // Вероятность выпадения бонуса после уничтожения врага
+	luck:        2, // Вероятность выпадения бонуса после уничтожения врага
 }
 
 function restartGame() {
@@ -210,7 +210,10 @@ function gameover() {
 }
 
 function chance() {
-	return randomeInteger(1,100) < spaceship.luck;
+	let x = randomeInteger(1,100);
+	console.log(x);
+	return x < spaceship.luck;
+
 }
 
 function levelComplete() {
@@ -259,7 +262,7 @@ function drawBonusSpeed() {
 
 			ctx.font = "22px Arial";
 			ctx.fillStyle = COLOR_WHITE;
-			ctx.fillText("S", bonusSpeed[i].x - 7, bonusSpeed[i].y + 5);
+			ctx.fillText("S", bonusSpeed[i].x - 7, bonusSpeed[i].y + 7);
 		}
 	}
 }
@@ -274,7 +277,7 @@ function drawBonusAngle() {
 
 			ctx.font = "22px Arial";
 			ctx.fillStyle = COLOR_WHITE;
-			ctx.fillText("A", bonusAngle[i].x - 7, bonusAngle[i].y + 5);
+			ctx.fillText("A", bonusAngle[i].x - 7, bonusAngle[i].y + 6);
 		}
 	}
 }
@@ -289,7 +292,7 @@ function drawBonusFrequency() {
 
 			ctx.font = "22px Arial";
 			ctx.fillStyle = COLOR_WHITE;
-			ctx.fillText("F", bonusFrequency[i].x - 7, bonusFrequency[i].y + 5);
+			ctx.fillText("F", bonusFrequency[i].x - 7, bonusFrequency[i].y + 7);
 		}
 	}
 }
@@ -471,7 +474,8 @@ function update() {
 				    asteroids[i].helth -= 1;
 				    if(asteroids[i].helth < 1) {
 					    asteroids[i].del = true;
-							if(chance) {
+							if(chance()) {
+								console.log("CHANCE");
                 switch (randomeInteger(1,3)) {
                 	case 1:
                 		bonusSpeed.push({x: asteroids[i].x, y: asteroids[i].y, dx: randomeInteger(3,6)});
