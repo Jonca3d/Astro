@@ -259,7 +259,7 @@ function drawBonusSpeed() {
 
 			ctx.font = "22px Arial";
 			ctx.fillStyle = COLOR_WHITE;
-			ctx.fillText("S", bonusSpeed[i].x, bonusSpeed[i].y);
+			ctx.fillText("S", bonusSpeed[i].x - 7, bonusSpeed[i].y + 5);
 		}
 	}
 }
@@ -274,14 +274,14 @@ function drawBonusAngle() {
 
 			ctx.font = "22px Arial";
 			ctx.fillStyle = COLOR_WHITE;
-			ctx.fillText("A", bonusAngle[i].x, bonusAngle[i].y);
+			ctx.fillText("A", bonusAngle[i].x - 7, bonusAngle[i].y + 5);
 		}
 	}
 }
 
 function drawBonusFrequency() {
 	if(bonusFrequency.length > 0) {
-		for(i in bonusAngle) {
+		for(i in bonusFrequency) {
 			ctx.strokeStyle = COLOR_WHITE;
 			ctx.beginPath();
 			ctx.arc(bonusFrequency[i].x, bonusFrequency[i].y, 20, 0, Math.PI*2, true);
@@ -289,7 +289,7 @@ function drawBonusFrequency() {
 
 			ctx.font = "22px Arial";
 			ctx.fillStyle = COLOR_WHITE;
-			ctx.fillText("F", bonusFrequency[i].x, bonusFrequency[i].y);
+			ctx.fillText("F", bonusFrequency[i].x - 7, bonusFrequency[i].y + 5);
 		}
 	}
 }
