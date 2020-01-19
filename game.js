@@ -1,10 +1,11 @@
-const COLOR_BLACK    = "#000000";
-const COLOR_WHITE    = "#FFFFFF";
-const COLOR_GRAY     = "#666666";
-const COLOR_GREEN    = "#00FF00";
-const COLOR_RED      = "#FF0000";
-const COLOR_DARK_RED = "#8B0000";
-const COLOR_ORANGE   = "#FF8C00";
+const COLOR_BLACK           = "#000000";
+const COLOR_WHITE           = "#FFFFFF";
+const COLOR_GRAY            = "#666666";
+const COLOR_GREEN           = "#00FF00";
+const COLOR_RED             = "#FF0000";
+const COLOR_DARK_RED        = "#8B0000";
+const COLOR_ORANGE          = "#FF8C00";
+const COLOR_DARK_STATE_GRAY = "#2F4F4F";
 
 let canvas =  document.getElementById("gameCanvas");
 let ctx    =  canvas.getContext("2d");
@@ -53,7 +54,15 @@ let spaceship = {
 	color:     	 COLOR_WHITE,
 	helth:	     100,
 	numberOfGun: 4,
-	luck:        2, // Вероятность выпадения бонуса после уничтожения врага
+	luck:        50, // Вероятность выпадения бонуса после уничтожения врага
+}
+
+let bossLevelOne = {
+	x:       500,
+	y:       200,
+	color:   COLOR_WHITE,
+	helth:   100,
+	status:  true,
 }
 
 function restartGame() {
@@ -390,6 +399,19 @@ function drawSpaceship() {
 	ctx.stroke();
 }
 
+function drawBossLevel() {
+	if(bossLevelOne.status) {
+		ctx.fillStyle = COLOR_DARK_STATE_GRAY;
+		ctx.beginPath();
+		ctx.arc(bossLevelOne.x, bossLevelOne.y, 70, 0, Math.PI*2, true);
+		ctx.fill();
+		ctx.fillStyle = COLOR_WHITE;
+		ctx.fillRect(bossLevelOne.x - 40, bossLevelOne.y - 35, 40, 10);		
+		ctx.fillRect(bossLevelOne.x - 40, bossLevelOne.y + 30, 40, 10);
+
+	}
+}
+
 function drawFillBackground() {
 	ctx.fillStyle = COLOR_BLACK;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -622,6 +644,7 @@ function draw() {
 
 		if (menuStatus) {
 			drawMenu();
+			drawBossLevel();
 		} else if (gameOverStatus) {
 			gameover();
 		} else if (levelCompleteStatus) {
