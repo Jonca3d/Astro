@@ -6,6 +6,7 @@ const COLOR_RED             = "#FF0000";
 const COLOR_DARK_RED        = "#8B0000";
 const COLOR_ORANGE          = "#FF8C00";
 const COLOR_DARK_STATE_GRAY = "#2F4F4F";
+const COLOR_MAROON          = "#800000";
 
 let canvas =  document.getElementById("gameCanvas");
 let ctx    =  canvas.getContext("2d");
@@ -405,10 +406,39 @@ function drawBossLevel() {
 		ctx.beginPath();
 		ctx.arc(bossLevelOne.x, bossLevelOne.y, 70, 0, Math.PI*2, true);
 		ctx.fill();
+		ctx.fillStyle = COLOR_RED;
+		ctx.fillRect(bossLevelOne.x - 60, bossLevelOne.y - 32, 20, 4);
+		ctx.fillRect(bossLevelOne.x - 60, bossLevelOne.y + 33, 20, 4);
 		ctx.fillStyle = COLOR_WHITE;
-		ctx.fillRect(bossLevelOne.x - 40, bossLevelOne.y - 35, 40, 10);		
+		ctx.fillRect(bossLevelOne.x - 40, bossLevelOne.y - 35, 40, 10);
 		ctx.fillRect(bossLevelOne.x - 40, bossLevelOne.y + 30, 40, 10);
-
+		ctx.fillStyle = COLOR_MAROON;
+		ctx.beginPath();
+		ctx.arc(bossLevelOne.x + 20, bossLevelOne.y - 55, 8, 0, Math.PI*2, true);
+		ctx.fill();
+		ctx.beginPath();
+		ctx.arc(bossLevelOne.x + 35, bossLevelOne.y - 45, 8, 0, Math.PI*2, true);
+		ctx.fill();
+		ctx.beginPath();
+		ctx.arc(bossLevelOne.x + 48, bossLevelOne.y - 31, 8, 0, Math.PI*2, true);
+		ctx.fill();
+		ctx.beginPath();
+		ctx.arc(bossLevelOne.x + 56, bossLevelOne.y - 14, 8, 0, Math.PI*2, true);
+		ctx.fill();
+		ctx.beginPath();
+		ctx.arc(bossLevelOne.x + 58, bossLevelOne.y + 5, 8, 0, Math.PI*2, true);
+		ctx.fill();
+		ctx.beginPath();
+		ctx.arc(bossLevelOne.x + 54, bossLevelOne.y + 24, 8, 0, Math.PI*2, true);
+		ctx.fill();
+		ctx.fillStyle = COLOR_BLACK;
+		ctx.beginPath();
+		ctx.arc(bossLevelOne.x + 20, bossLevelOne.y , 23, 0, Math.PI*2, true);
+		ctx.fill();
+		ctx.fillStyle = "#008080";
+		ctx.beginPath();
+		ctx.arc(bossLevelOne.x + 20, bossLevelOne.y , 20, 0, Math.PI*2, true);
+		ctx.fill();
 	}
 }
 
