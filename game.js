@@ -220,9 +220,7 @@ function gameover() {
 }
 
 function chance() {
-	//let x = randomeInteger(1,100);
 	return randomeInteger(1,100) < spaceship.luck;
-
 }
 
 function levelComplete() {
@@ -470,6 +468,15 @@ function drawTextHelth() {
 	ctx.fillText("Helth: " + spaceship.helth, 500, 30);
 }
 
+function updatetStateOfMovingObj (movingObj) {
+
+	if (movingObj.status) {
+		movingObj.x -= movingObj.speed;
+	} else if(movingObj.appearanceTime == time.value) {
+		movingObj.status = true;
+	}
+
+}
 function update() {
 
 	renderIterations.iteration++;
@@ -490,13 +497,14 @@ function update() {
 
   // Проверка столкновения астероидов с кораблем и пулями
 	// Проверка времени создания астероидов
-	// Проверка выхода астероида за край экрана
 	for (i in asteroids) {
-		if (asteroids[i].status) {
+	/*	if (asteroids[i].status) {
 			asteroids[i].x -= asteroids[i].speed;
 		} else if(asteroids[i].appearanceTime == time.value) {
 			asteroids[i].status = true;
-		}
+		}*/
+
+updatetStateOfMovingObj(asteroids[i]);
 
 		if (spaceship.x + 40 > asteroids[i].x - asteroids[i].radius
 				&& spaceship.x < asteroids[i].x + asteroids[i].radius
@@ -610,12 +618,12 @@ function update() {
 
   // Перебор аптечек
 	for(i in aidKit) {
-		if (aidKit[i].status) {
+	/*	if (aidKit[i].status) {
 		aidKit[i].x -= aidKit[i].speed;
 	} else if (aidKit[i].appearanceTime == time.value) {
 		aidKit[i].status = true;
-	}
-
+	}*/
+updatetStateOfMovingObj(aidKit[i]);
 	if (spaceship.x + 40 > aidKit[i].x
 	    && spaceship.x < aidKit[i].x + 30
 		  && spaceship.y - 10 < aidKit[i].y + 30
