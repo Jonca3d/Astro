@@ -220,9 +220,8 @@ function gameover() {
 }
 
 function chance() {
-	let x = randomeInteger(1,100);
-	console.log(x);
-	return x < spaceship.luck;
+	//let x = randomeInteger(1,100);
+	return randomeInteger(1,100) < spaceship.luck;
 
 }
 
@@ -527,7 +526,6 @@ function update() {
 				    if(asteroids[i].helth < 1) {
 					    asteroids[i].del = true;
 							if(chance()) {
-								console.log("CHANCE");
                 switch (randomeInteger(1,3)) {
                 	case 1:
                 		bonusSpeed.push({x: asteroids[i].x, y: asteroids[i].y, dx: randomeInteger(3,6)});
