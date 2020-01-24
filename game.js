@@ -498,13 +498,8 @@ function update() {
   // Проверка столкновения астероидов с кораблем и пулями
 	// Проверка времени создания астероидов
 	for (i in asteroids) {
-	/*	if (asteroids[i].status) {
-			asteroids[i].x -= asteroids[i].speed;
-		} else if(asteroids[i].appearanceTime == time.value) {
-			asteroids[i].status = true;
-		}*/
 
-updatetStateOfMovingObj(asteroids[i]);
+    updatetStateOfMovingObj(asteroids[i]);
 
 		if (spaceship.x + 40 > asteroids[i].x - asteroids[i].radius
 				&& spaceship.x < asteroids[i].x + asteroids[i].radius
@@ -536,13 +531,28 @@ updatetStateOfMovingObj(asteroids[i]);
 							if(chance()) {
                 switch (randomeInteger(1,3)) {
                 	case 1:
-                		bonusSpeed.push({x: asteroids[i].x, y: asteroids[i].y, dx: randomeInteger(3,6)});
+                		bonusSpeed.push({x:      asteroids[i].x,
+											               y:      asteroids[i].y,
+																		 speed:  randomeInteger(3,6),
+																		 status: true,
+																		 del:    false,
+																	 });
                 		break;
 									case 2:
-									  bonusAngle.push({x: asteroids[i].x, y: asteroids[i].y, dx: randomeInteger(3,6)});
+									  bonusAngle.push({x:      asteroids[i].x,
+											               y:      asteroids[i].y,
+																		 speed:  randomeInteger(3,6),
+																		 status: true,
+																		 del:    false,
+																	 });
 										break;
 									case 3:
-									  bonusFrequency.push({x: asteroids[i].x, y: asteroids[i].y, dx: randomeInteger(3,6)});
+									  bonusFrequency.push({x:      asteroids[i].x,
+											                   y:      asteroids[i].y,
+																		     speed:  randomeInteger(3,6),
+																		     status: true,
+																		     del:    false,
+																	     });
                 	default:
                     break;
                 }
@@ -616,15 +626,39 @@ updatetStateOfMovingObj(asteroids[i]);
 	} // Конец перебора бонуса upgrade
 	// Конец перебора юнитов бонус-upgrade
 
+  for(i in bonusAngle) {
+		updatetStateOfMovingObj(bonusAngle[i]);
+		console.log("AngleMove");
+		if (bonusAngle[i].x < -40) {
+			bonusAngle[i].del = true;
+		}
+		if (bonusAngle[i].del) bonusAngle.splice(i,1);
+	}
+
+	for(i in bonusSpeed) {
+		updatetStateOfMovingObj(bonusSpeed[i]);
+		console.log("AngleMove");
+		if (bonusSpeed[i].x < -40) {
+			bonusSpeed[i].del = true;
+		}
+		if (bonusSpeed[i].del) bonusSpeed.splice(i,1);
+	}
+
+	for(i in bonusFrequency) {
+		updatetStateOfMovingObj(bonusFrequency[i]);
+		console.log("AngleMove");
+		if (bonusFrequency[i].x < -40) {
+			bonusFrequency[i].del = true;
+		}
+		if (bonusFrequency[i].del) bonusFrequency.splice(i,1);
+	}
+
   // Перебор аптечек
 	for(i in aidKit) {
-	/*	if (aidKit[i].status) {
-		aidKit[i].x -= aidKit[i].speed;
-	} else if (aidKit[i].appearanceTime == time.value) {
-		aidKit[i].status = true;
-	}*/
-updatetStateOfMovingObj(aidKit[i]);
-	if (spaceship.x + 40 > aidKit[i].x
+
+    updatetStateOfMovingObj(aidKit[i]);
+
+  	if (spaceship.x + 40 > aidKit[i].x
 	    && spaceship.x < aidKit[i].x + 30
 		  && spaceship.y - 10 < aidKit[i].y + 30
 		  && spaceship.y + 10 > aidKit[i].y
@@ -633,15 +667,14 @@ updatetStateOfMovingObj(aidKit[i]);
 				spaceship.helth += aidKit[i].helth;
 			}
 
-	if ( aidKit[i].x < -40 ) {
+	  if ( aidKit[i].x < -40 ) {
 		aidKit[i].del = true;
-	}
-	if (aidKit[i].del) aidKit.splice(i,1);
-} // конец перебора аптечек
+	  }
+	  if (aidKit[i].del) aidKit.splice(i,1);
+  } // конец перебора аптечек
 
 	// Генерация пуль
 	if(renderIterations.iteration % 60 == 0 && gameOverStatus == false) {
-	//	fire.push({x: spaceship.x + 50, y: spaceship.y, dx: 3});
 
 		for(let i=0, j = spaceship.y - 3 * (spaceship.numberOfGun - 1); i<spaceship.numberOfGun; i++, j+=6) {
 			fire.push({x: spaceship.x + 50, y: j, dx: 10});
