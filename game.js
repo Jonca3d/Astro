@@ -14,7 +14,7 @@ let ctx    =  canvas.getContext("2d");
 // Переменные для работы с Progressbar
 let time             =  { value: 0 }; // Относительное игровое время. Значение time соответствует длине Progressbar в пикселях
 let renderIterations =  { iteration: 0 }; // Подсчитывает количество перерисовок canvas
-let levelLength      =  50; // Значение влияет на скорость заполнения Progressbar. Чем выше значение тем медленее заполняется шкала
+let levelLength      =  2; // Значение влияет на скорость заполнения Progressbar. Чем выше значение тем медленее заполняется шкала
 
 let menu             =  ["Start / Resume", "Restart", "Exit"];
 let selectedMenuItem =  0;
@@ -64,6 +64,7 @@ let bossLevelOne = {
 	color:   COLOR_WHITE,
 	helth:   100,
 	status:  true,
+	del:     false,
 }
 
 function restartGame() {
@@ -225,6 +226,7 @@ function chance() {
 
 function levelComplete() {
 	console.log("Level_Complete");
+	levelCompleteStatus = true;
 }
 
 function drawUpgrade() {
@@ -263,6 +265,7 @@ function drawBonusSpeed() {
   if(bonusSpeed.length > 0) {
 		for(i in bonusSpeed) {
 			ctx.strokeStyle = COLOR_WHITE;
+			ctx.lineWidth = 3;
 			ctx.beginPath();
 			ctx.arc(bonusSpeed[i].x, bonusSpeed[i].y, 20, 0, Math.PI*2, true);
 			ctx.stroke();
@@ -278,6 +281,7 @@ function drawBonusAngle() {
 	if(bonusAngle.length > 0) {
 		for(i in bonusAngle) {
 			ctx.strokeStyle = COLOR_WHITE;
+			ctx.lineWidth = 3;
 			ctx.beginPath();
 			ctx.arc(bonusAngle[i].x, bonusAngle[i].y, 20, 0, Math.PI*2, true);
 			ctx.stroke();
@@ -293,6 +297,7 @@ function drawBonusFrequency() {
 	if(bonusFrequency.length > 0) {
 		for(i in bonusFrequency) {
 			ctx.strokeStyle = COLOR_WHITE;
+			ctx.lineWidth = 3;
 			ctx.beginPath();
 			ctx.arc(bonusFrequency[i].x, bonusFrequency[i].y, 20, 0, Math.PI*2, true);
 			ctx.stroke();
@@ -369,6 +374,7 @@ function drawAsteroids() {
 
 			}
 		//	ctx.strokeStyle = COLOR_GREEN;
+		  ctx.lineWidth = 2;
 			ctx.beginPath();
 			ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].radius, 0, Math.PI*2, true);
 			ctx.stroke();
@@ -477,6 +483,8 @@ function updatetStateOfMovingObj (movingObj) {
 	}
 
 }
+
+
 function update() {
 
 	renderIterations.iteration++;
@@ -487,11 +495,13 @@ function update() {
 	} else {
 	// Движение звезд на заднем плане
 	for(i in stars) {
-		if(stars[i].x > -5) {
+		if(!levelCompleteStatus) {
+			if(stars[i].x > -5) {
 			stars[i].x -= stars[i].speed;
-		} else {
+	  	} else {
 			stars[i].x = canvas.width + 5;
 			stars[i].y = randomeInteger(0, canvas.height);
+	  	}
 		}
 	}
 
@@ -626,7 +636,7 @@ function update() {
 	} // Конец перебора бонуса upgrade
 	// Конец перебора юнитов бонус-upgrade
 
-  for(i in bonusAngle) {
+	for(i in bonusAngle) {
 		updatetStateOfMovingObj(bonusAngle[i]);
 		console.log("AngleMove");
 		if (bonusAngle[i].x < -40) {
@@ -716,10 +726,7 @@ function draw() {
 			drawBossLevel();
 		} else if (gameOverStatus) {
 			gameover();
-		} else if (levelCompleteStatus) {
-			levelComplete();
-		}
-		else {
+		} else {
 			drawSpaceship();
 			drawTextScore();
 			drawTextHelth();
