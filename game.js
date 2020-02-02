@@ -146,7 +146,7 @@ function initialization() {
 
 } // initialization
 
-//Привязываем центр коробля к оси Y курсора
+//Привязываем центр коробля к курсор
 function mouseMoveHandler(e) {
 	let relativeY = e.clientY - canvas.offsetTop;
 	let relativeX = e.clientX - canvas.offsetLeft;
@@ -335,7 +335,6 @@ function calculateProgress(levelLength, time) {
 	if( renderIterations.iteration % levelLength == 0 ) {
 		time.value++;
 	}
-
 }
 
 function drawProgressbar(progress){
@@ -474,16 +473,14 @@ function drawTextHelth() {
 	ctx.fillText("Helth: " + spaceship.helth, 500, 30);
 }
 
-function updatetStateOfMovingObj (movingObj) {
+function updatetStateOfMovingObj(movingObj) {
 
 	if (movingObj.status) {
 		movingObj.x -= movingObj.speed;
 	} else if(movingObj.appearanceTime == time.value) {
 		movingObj.status = true;
 	}
-
 }
-
 
 function update() {
 
