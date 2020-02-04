@@ -16,7 +16,7 @@ let time             =  { value: 0 }; // Относительное игрово
 let renderIterations =  { iteration: 0 }; // Подсчитывает количество перерисовок canvas
 let levelLength      =  2; // Значение влияет на скорость заполнения Progressbar. Чем выше значение тем медленее заполняется шкала
 
-let menu             =  ["Start / Resume", "Restart", "Exit"];
+let menu             =  ["Start / Resume", "Restart"];
 let selectedMenuItem =  0;
 let pressKeyUp       =  false;
 let pressKeyDown     =  false;
@@ -50,12 +50,18 @@ let colorSpaceship = COLOR_WHITE;
 let score = 0;
 
 let spaceship = {
-    x:			     40,
-    y: 			     100,
-    color:     	 COLOR_WHITE,
-    helth:	     100,
-    numberOfGun: 4,
-    luck:        50, // Вероятность выпадения бонуса после уничтожения врага
+    x:             40,
+    y:             100,
+    dimTopSide:    10,
+    dimRightSide:  40,
+    dimBottomSide: 10,
+    dimLeftSide:   0,
+    color:         COLOR_WHITE,
+    status:        true,
+    helth:         100,
+    numberOfGun:   4,
+    attackAngle:   false, // если true, то пули разлетаются веером
+    luck:          50, // Вероятность выпадения бонуса после уничтожения врага
 }
 
 let bossLevelOne = {
@@ -84,27 +90,32 @@ function restartGame() {
 function initialization() {
 
     //Создание задника. Задаем колличество и инициализируем элементы
-for(let i=0; i<numberOfStars; i++) {
-    stars[i] = {
-        x:      randomeInteger(1,canvas.width),
-        y:      randomeInteger(0, canvas.height),
-        radius: randomeInteger(1,3),
-        speed:  randomeInteger(10,20),
-                };
-}
-
-    for(let i=0, j= canvas.width / numberOfAsteroids; i<numberOfAsteroids; i++) {
-    asteroids[i] = {
-        x:              canvas.width + 20,
-        y:              randomeInteger(10, canvas.height - 10),
-        radius:         randomeInteger(10, 20),
-        speed:          randomeInteger(1, 3),
-        appearanceTime: j * i + 1,
-        helth:          3,
-        status:         false,
-        del:            false, // флаг. Если true, то обьект помечен для удаленя
+    for(let i=0; i<numberOfStars; i++) {
+       stars[i] = {
+          x:      randomeInteger(1,canvas.width),
+          y:      randomeInteger(0, canvas.height),
+          radius: randomeInteger(1,3),
+          speed:  randomeInteger(10,20),
+        };
     }
-}
+
+    for(let i=0, radius = 0,  j= canvas.width / numberOfAsteroids; i<numberOfAsteroids; i++) {
+       radius =  randomeInteger(10, 20)
+       asteroids[i] = {
+          x:              canvas.width + 20,
+          y:              randomeInteger(10, canvas.height - 10),
+          radius:         radius,
+          dimTopSide:     radius,
+          dimRightSide:   radius,
+          dimBottomSide:  radius,
+          dimLeftSide:    radius,
+          speed:          randomeInteger(1, 3),
+          appearanceTime: j * i + 1,
+          helth:          3,
+          status:         false,
+          del:            false, // флаг. Если true, то обьект помечен для удаленя
+        }
+    }
 
 for (let i=0, j = canvas.width / numberOfUpgrade; i<numberOfUpgrade; i++) {
         upgrade[i] = {
@@ -482,6 +493,30 @@ function updatetStateOfMovingObj(movingObj) {
     }
 }
 
+function intersectionOfObjects(objOne, objTwo) {
+    if(    objOne.x + objOne.dimRightSide   >  objTwo.x - objTwo.dimLeftSide
+        && objOne.x - objOne.dimLeftSide    <  objTwo.x + objTwo.dimRightSide
+        && objOne.y - objOne.dimTopSide     <  objTwo.y + objTwo.dimBottomSide
+        && objOne.y + objOne.dimBottomSide  >  objTwo.y - objTwo.dimTopSide
+        && objOne.status
+        && objTwo.status
+        && gameOverStatus == false) {
+        console.log("Return TRUE");
+        return true;
+    } else {
+        return false;
+    }
+    
+    /*
+    (spaceship.x + 40 > asteroids[i].x - asteroids[i].radius
+    && spaceship.x < asteroids[i].x + asteroids[i].radius
+    && spaceship.y - 10 < asteroids[i].y + asteroids[i].radius
+    && spaceship.y + 10 > asteroids[i].y - asteroids[i].radius
+    && asteroids[i].status
+    && gameOverStatus == false)
+    */
+}
+
 function update() {
 
     renderIterations.iteration++;
@@ -508,12 +543,13 @@ function update() {
 
     updatetStateOfMovingObj(asteroids[i]);
 
+    /*
         if (spaceship.x + 40 > asteroids[i].x - asteroids[i].radius
                 && spaceship.x < asteroids[i].x + asteroids[i].radius
                 && spaceship.y - 10 < asteroids[i].y + asteroids[i].radius
                 && spaceship.y + 10 > asteroids[i].y - asteroids[i].radius
                 && asteroids[i].status
-            && gameOverStatus == false) {
+                && gameOverStatus == false) {
                     asteroids[i].helth -= 1;
                     spaceship.helth -= 1;
                     if(asteroids[i].helth < 1) {
@@ -524,7 +560,17 @@ function update() {
                         gameOverStatus = true;
                     }
                 }
-
+*/
+    
+    if (intersectionOfObjects(spaceship, asteroids[i])) {
+        asteroids[i].helth -= 1;
+    spaceship.helth -= 1;
+    if(asteroids[i].helth < 1) {
+        asteroids[i].del = true;
+        score++;
+    }
+    if(spaceship.helth < 1) {
+        gameOverStatus = true;}}
         // Проверка столкновения астроида с каждей пулей
         for (j in fire) {
             if (fire[j].x + 10 > asteroids[i].x - asteroids[i].radius
@@ -636,16 +682,23 @@ for(i in upgrade) {
 
     for(i in bonusAngle) {
         updatetStateOfMovingObj(bonusAngle[i]);
-        console.log("AngleMove");
         if (bonusAngle[i].x < -40) {
             bonusAngle[i].del = true;
+        }
+        
+        if(spaceship.x + 40 > bonusAngle[i].x - bonusAngle[i].radius
+                && spaceship.x < bonusAngle[i].x + bonusAngle[i].radius
+                && spaceship.y - 10 < bonusAngle[i].y + bonusAngle[i].radius
+                && spaceship.y + 10 > bonusAngle[i].y - bonusAngle[i].radius
+                && bonusAngle[i].status
+                && gameOverStatus == false) {
+            // TO DO: написать код для воздействия этого бонуса на корабль
         }
         if (bonusAngle[i].del) bonusAngle.splice(i,1);
     }
 
     for(i in bonusSpeed) {
         updatetStateOfMovingObj(bonusSpeed[i]);
-        console.log("AngleMove");
         if (bonusSpeed[i].x < -40) {
             bonusSpeed[i].del = true;
         }
@@ -654,7 +707,6 @@ for(i in upgrade) {
 
     for(i in bonusFrequency) {
         updatetStateOfMovingObj(bonusFrequency[i]);
-        console.log("AngleMove");
         if (bonusFrequency[i].x < -40) {
             bonusFrequency[i].del = true;
         }
