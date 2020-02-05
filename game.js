@@ -120,26 +120,30 @@ function initialization() {
 for (let i=0, j = canvas.width / numberOfUpgrade; i<numberOfUpgrade; i++) {
         upgrade[i] = {
         startY:         randomeInteger(10, canvas.height - 10),
-        headX:          canvas.width + 20,
+        x:              canvas.width + 20,
         color:          COLOR_GRAY,
         appearanceTime: j * i + 1,
+        dimTopSide:     6,
+        dimRightSide:   40,
+        dimBottomSide:  6,
+        dimLeftSide:    0,
         status:         false,
         del:            false,
         move:           -0.6,
         speed:          1,
     };
 
-        upgrade[i].headY  = upgrade[i].startY;
+        upgrade[i].y  = upgrade[i].startY;
         upgrade[i].tail1Y = upgrade[i].startY;
         upgrade[i].tail2Y = upgrade[i].startY;
         upgrade[i].tail3Y = upgrade[i].startY;
         upgrade[i].tail4Y = upgrade[i].startY;
         upgrade[i].tail5Y = upgrade[i].startY;
-        upgrade[i].tail1X = upgrade[i].headX + 14;
-        upgrade[i].tail2X = upgrade[i].headX + 24;
-        upgrade[i].tail3X = upgrade[i].headX + 32;
-        upgrade[i].tail4X = upgrade[i].headX + 38;
-        upgrade[i].tail5X = upgrade[i].headX + 42;
+        upgrade[i].tail1X = upgrade[i].x + 14;
+        upgrade[i].tail2X = upgrade[i].x + 24;
+        upgrade[i].tail3X = upgrade[i].x + 32;
+        upgrade[i].tail4X = upgrade[i].x + 38;
+        upgrade[i].tail5X = upgrade[i].x + 42;
 
     }
 
@@ -147,10 +151,10 @@ for(let i=0, j = canvas.width / numberOfAidKit; i < numberOfAidKit; i++) {
     aidKit[i] =  {
         x:              canvas.width + 20,
         y:              randomeInteger(10, canvas.height - 10),
-        dimTopSide:     0, // TO DO Расчитать габариты
-        dimRightSide:   0, // TO DO Расчитать габариты
-        dimBottomSide:  0, // TO DO Расчитать габариты
-        dimLeftSide:    0, // TO DO Расчитать габариты
+        dimTopSide:     0, 
+        dimRightSide:   30, 
+        dimBottomSide:  30, 
+        dimLeftSide:    0, 
         speed:          randomeInteger(6, 50),
         appearanceTime: j * i + 1,
         helth:          5,
@@ -247,10 +251,10 @@ function levelComplete() {
 function drawUpgrade() {
 for(i in upgrade) {
         ctx.beginPath();
-    ctx.moveTo(upgrade[i].headX, upgrade[i].headY);
-    ctx.lineTo(upgrade[i].headX + 7, upgrade[i].headY - 6);
-    ctx.lineTo(upgrade[i].headX + 7, upgrade[i].headY + 6);
-    ctx.lineTo(upgrade[i].headX, upgrade[i].headY);
+    ctx.moveTo(upgrade[i].x, upgrade[i].y);
+    ctx.lineTo(upgrade[i].x + 7, upgrade[i].y - 6);
+    ctx.lineTo(upgrade[i].x + 7, upgrade[i].y + 6);
+    ctx.lineTo(upgrade[i].x, upgrade[i].y);
     ctx.closePath();
     ctx.fillStyle = COLOR_GREEN;
     ctx.fill();
@@ -505,20 +509,10 @@ function intersectionOfObjects(objOne, objTwo) {
         && objOne.status
         && objTwo.status
         && gameOverStatus == false) {
-        console.log("Return TRUE");
         return true;
     } else {
         return false;
     }
-    
-    /*
-    (spaceship.x + 40 > asteroids[i].x - asteroids[i].radius
-    && spaceship.x < asteroids[i].x + asteroids[i].radius
-    && spaceship.y - 10 < asteroids[i].y + asteroids[i].radius
-    && spaceship.y + 10 > asteroids[i].y - asteroids[i].radius
-    && asteroids[i].status
-    && gameOverStatus == false)
-    */
 }
 
 function update() {
@@ -547,69 +541,61 @@ function update() {
 
     updatetStateOfMovingObj(asteroids[i]);
 
-    /*
-        if (spaceship.x + 40 > asteroids[i].x - asteroids[i].radius
-                && spaceship.x < asteroids[i].x + asteroids[i].radius
-                && spaceship.y - 10 < asteroids[i].y + asteroids[i].radius
-                && spaceship.y + 10 > asteroids[i].y - asteroids[i].radius
-                && asteroids[i].status
-                && gameOverStatus == false) {
-                    asteroids[i].helth -= 1;
-                    spaceship.helth -= 1;
-                    if(asteroids[i].helth < 1) {
-                        asteroids[i].del = true;
-                        score++;
-                    }
-                    if(spaceship.helth < 1) {
-                        gameOverStatus = true;
-                    }
-                }
-*/
     
     if (intersectionOfObjects(spaceship, asteroids[i])) {
         asteroids[i].helth -= 1;
-    spaceship.helth -= 1;
-    if(asteroids[i].helth < 1) {
-        asteroids[i].del = true;
-        score++;
+        spaceship.helth -= 1;
+        if(asteroids[i].helth < 1) {
+            asteroids[i].del = true;
+            score++;
+        }
+        if(spaceship.helth < 1) {
+            gameOverStatus = true;            
+        }
+        
     }
-    if(spaceship.helth < 1) {
-        gameOverStatus = true;}}
         // Проверка столкновения астроида с каждей пулей
         for (j in fire) {
-            if (fire[j].x + 10 > asteroids[i].x - asteroids[i].radius
-                    && fire[j].x < asteroids[i].x + asteroids[i].radius
-                    && fire[j].y > asteroids[i].y - asteroids[i].radius
-                    && fire[j].y < asteroids[i].y + asteroids[i].radius
-                    && asteroids[i].status) {
+            if (intersectionOfObjects(fire[j], asteroids[i])) {
                     asteroids[i].helth -= 1;
                     if(asteroids[i].helth < 1) {
                         asteroids[i].del = true;
                             if(chance()) {
                 switch (randomeInteger(1,3)) {
                     case 1:
-                        bonusSpeed.push({x:      asteroids[i].x,
-                                         y:      asteroids[i].y,
-                                         speed:  randomeInteger(3,6),
-                                         status: true,
-                                         del:    false,
+                        bonusSpeed.push({x:             asteroids[i].x,
+                                         y:             asteroids[i].y,
+                                         dimTopSide:    20,
+                                         dimRightSide:  20,
+                                         dimBottomSide: 20,
+                                         dimLeftSide:   20,
+                                         speed:         randomeInteger(3,6),
+                                         status:        true,
+                                         del:           false,
                         });
-                        break;
-                        
+                        break;                        
                     case 2:
-                        bonusAngle.push({x:      asteroids[i].x,
-                                         y:      asteroids[i].y,
-                                         speed:  randomeInteger(3,6),
-                                         status: true,
-                                         del:    false,
+                        bonusAngle.push({x:             asteroids[i].x,
+                                         y:             asteroids[i].y,
+                                         dimTopSide:    20,
+                                         dimRightSide:  20,
+                                         dimBottomSide: 20,
+                                         dimLeftSide:   20,
+                                         speed:         randomeInteger(3,6),
+                                         status:        true,
+                                         del:           false,
                         });
                         break;
                     case 3:
-                        bonusFrequency.push({x:      asteroids[i].x,
-                                             y:      asteroids[i].y,
-                                             speed:  randomeInteger(3,6),
-                                             status: true,
-                                             del:    false,
+                        bonusFrequency.push({x:             asteroids[i].x,
+                                             y:             asteroids[i].y,
+                                             dimTopSide:    20,
+                                             dimRightSide:  20,
+                                             dimBottomSide: 20,
+                                             dimLeftSide:   20,
+                                             speed:         randomeInteger(3,6),
+                                             status:        true,
+                                             del:           false,
                         });
                     default:
                     break;
@@ -633,11 +619,11 @@ for(i in upgrade) {
             upgrade[i].status = true;
         }
         if (upgrade[i].status) {
-        if(upgrade[i].headY >= upgrade[i].startY + 5 || upgrade[i].headY <= upgrade[i].startY - 5) upgrade[i].move *= -1;
-        upgrade[i].headY += upgrade[i].move;
-        if(upgrade[i].tail1Y > upgrade[i].headY) {
+        if(upgrade[i].y >= upgrade[i].startY + 5 || upgrade[i].y <= upgrade[i].startY - 5) upgrade[i].move *= -1;
+        upgrade[i].y += upgrade[i].move;
+        if(upgrade[i].tail1Y > upgrade[i].y) {
             upgrade[i].tail1Y -= 0.6;
-        } else if(upgrade[i].tail1Y < upgrade[i].headY){
+        } else if(upgrade[i].tail1Y < upgrade[i].y){
             upgrade[i].tail1Y += 0.6;
         }
         if(upgrade[i].tail2Y > upgrade[i].tail1Y) {
@@ -661,21 +647,17 @@ for(i in upgrade) {
             upgrade[i].tail5Y += 0.2;
         }
 
-            upgrade[i].headX  -= upgrade[i].speed;
+            upgrade[i].x  -= upgrade[i].speed;
             upgrade[i].tail1X -= upgrade[i].speed;
             upgrade[i].tail2X -= upgrade[i].speed;
             upgrade[i].tail3X -= upgrade[i].speed;
             upgrade[i].tail4X -= upgrade[i].speed;
             upgrade[i].tail5X -= upgrade[i].speed;
 
-            if (upgrade[i].headX == -60) upgrade[i].del = true;
+            if (upgrade[i].x == -60) upgrade[i].del = true;
     }
 
-    if(upgrade[i].headX < spaceship.x + 50
-        && upgrade[i].headX + 40 > spaceship.x
-        && upgrade[i].headY + 6 > spaceship.y - 10
-        && upgrade[i].headY - 6 < spaceship.y + 10
-        && upgrade[i].status) {
+    if(intersectionOfObjects(spaceship, upgrade[i]) ) {
                 spaceship.numberOfGun++;
                 upgrade[i].del = true;
             }
@@ -690,12 +672,8 @@ for(i in upgrade) {
             bonusAngle[i].del = true;
         }
         
-        if(spaceship.x + 40 > bonusAngle[i].x - bonusAngle[i].radius
-                && spaceship.x < bonusAngle[i].x + bonusAngle[i].radius
-                && spaceship.y - 10 < bonusAngle[i].y + bonusAngle[i].radius
-                && spaceship.y + 10 > bonusAngle[i].y - bonusAngle[i].radius
-                && bonusAngle[i].status
-                && gameOverStatus == false) {
+        if(intersectionOfObjects(spaceship, bonusAngle[i])) {
+            bonusAngle[i].del = true;
             // TO DO: написать код для воздействия этого бонуса на корабль
         }
         if (bonusAngle[i].del) bonusAngle.splice(i,1);
@@ -706,6 +684,10 @@ for(i in upgrade) {
         if (bonusSpeed[i].x < -40) {
             bonusSpeed[i].del = true;
         }
+        if(intersectionOfObjects(spaceship, bonusSpeed[i])) {
+            bonusSpeed[i].del = true;
+            // TO DO: написать код для воздействия этого бонуса на корабль
+        }
         if (bonusSpeed[i].del) bonusSpeed.splice(i,1);
     }
 
@@ -713,6 +695,10 @@ for(i in upgrade) {
         updatetStateOfMovingObj(bonusFrequency[i]);
         if (bonusFrequency[i].x < -40) {
             bonusFrequency[i].del = true;
+        }
+        if(intersectionOfObjects(spaceship, bonusFrequency[i])) {
+            bonusFrequency[i].del = true;
+            // TO DO: написать код для воздействия этого бонуса на корабль
         }
         if (bonusFrequency[i].del) bonusFrequency.splice(i,1);
     }
@@ -722,11 +708,7 @@ for(i in upgrade) {
 
     updatetStateOfMovingObj(aidKit[i]);
 
-    if (spaceship.x + 40 > aidKit[i].x
-        && spaceship.x < aidKit[i].x + 30
-        && spaceship.y - 10 < aidKit[i].y + 30
-        && spaceship.y + 10 > aidKit[i].y
-        && aidKit[i].status) {
+    if (intersectionOfObjects(spaceship, aidKit[i])) {
                 aidKit[i].del = true;
                 spaceship.helth += aidKit[i].helth;
             }
@@ -739,15 +721,15 @@ for(i in upgrade) {
 
     // Генерация пуль
     if(renderIterations.iteration % 60 == 0 && gameOverStatus == false) {
-        // TO DO Расчитать габариты
         for(let i=0, j = spaceship.y - 3 * (spaceship.numberOfGun - 1); i<spaceship.numberOfGun; i++, j+=6) {
             fire.push({x:             spaceship.x + 50, 
                        y:             j, 
-                       dx:            10
+                       dx:            10,
                        dimTopSide:    0,
                        dimRightSide:  10,
                        dimBottomSide: 0,
                        dimLeftSide:   0,
+                       status:        true,
             });
         }
     }
@@ -759,7 +741,7 @@ for(i in upgrade) {
         fire.splice(i,1);
         }
     }
-
+ 
 if(time.value == canvas.width) {
         levelComplete();
     }
