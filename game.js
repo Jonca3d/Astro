@@ -147,6 +147,10 @@ for(let i=0, j = canvas.width / numberOfAidKit; i < numberOfAidKit; i++) {
     aidKit[i] =  {
         x:              canvas.width + 20,
         y:              randomeInteger(10, canvas.height - 10),
+        dimTopSide:     0, // TO DO Расчитать габариты
+        dimRightSide:   0, // TO DO Расчитать габариты
+        dimBottomSide:  0, // TO DO Расчитать габариты
+        dimLeftSide:    0, // TO DO Расчитать габариты
         speed:          randomeInteger(6, 50),
         appearanceTime: j * i + 1,
         helth:          5,
@@ -395,8 +399,8 @@ function drawAsteroids() {
 function drawAidKit() {
     for(i in aidKit) {
         if (aidKit[i].status){
-        ctx.fillStyle = COLOR_RED;
-        ctx.fillRect(aidKit[i].x, aidKit[i].y + 10, 30, 10);
+            ctx.fillStyle = COLOR_RED;
+            ctx.fillRect(aidKit[i].x, aidKit[i].y + 10, 30, 10);
             ctx.fillRect(aidKit[i].x + 10, aidKit[i].y, 10, 30);
         }
     }
@@ -735,9 +739,16 @@ for(i in upgrade) {
 
     // Генерация пуль
     if(renderIterations.iteration % 60 == 0 && gameOverStatus == false) {
-
+        // TO DO Расчитать габариты
         for(let i=0, j = spaceship.y - 3 * (spaceship.numberOfGun - 1); i<spaceship.numberOfGun; i++, j+=6) {
-            fire.push({x: spaceship.x + 50, y: j, dx: 10});
+            fire.push({x:             spaceship.x + 50, 
+                       y:             j, 
+                       dx:            10
+                       dimTopSide:    0,
+                       dimRightSide:  10,
+                       dimBottomSide: 0,
+                       dimLeftSide:   0,
+            });
         }
     }
 
