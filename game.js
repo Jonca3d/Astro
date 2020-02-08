@@ -60,7 +60,7 @@ let spaceship = {
     status:        true,
     helth:         100,
     numberOfGun:   4,
-    attackAngle:   false, // если true, то пули разлетаются веером
+    attackAngle:   true, // если true, то пули разлетаются веером
     luck:          50, // Вероятность выпадения бонуса после уничтожения врага
 }
 
@@ -674,7 +674,11 @@ for(i in upgrade) {
         
         if(intersectionOfObjects(spaceship, bonusAngle[i])) {
             bonusAngle[i].del = true;
-            // TO DO: написать код для воздействия этого бонуса на корабль
+            if(spaceship.attackAngle) {
+                spaceship.attackAngle = false;                
+            } else {
+                spaceship.attackAngle = true;
+            }
         }
         if (bonusAngle[i].del) bonusAngle.splice(i,1);
     }
@@ -721,23 +725,40 @@ for(i in upgrade) {
 
     // Генерация пуль
     if(renderIterations.iteration % 60 == 0 && gameOverStatus == false) {
-        for(let i=0, j = spaceship.y - 3 * (spaceship.numberOfGun - 1); i<spaceship.numberOfGun; i++, j+=6) {
-            fire.push({x:             spaceship.x + 50, 
-                       y:             j, 
-                       dx:            10,
-                       dimTopSide:    0,
-                       dimRightSide:  10,
-                       dimBottomSide: 0,
-                       dimLeftSide:   0,
-                       status:        true,
-            });
+        if(!spaceship.attackAngle) {
+            for(let i=0, j = spaceship.y - 3 * (spaceship.numberOfGun - 1); i<spaceship.numberOfGun; i++, j+=6) {
+                fire.push({x:             spaceship.x + 50, 
+                    y:             j, 
+                    dx:            10,
+                    dy:            0,
+                    dimTopSide:    0,
+                    dimRightSide:  10,
+                    dimBottomSide: 0,
+                    dimLeftSide:   0,
+                    status:        true,
+                });
+            }
+        } else {
+            for(let i=0, j = spaceship.y - 3 * (spaceship.numberOfGun - 1), k = (spaceship.numberOfGun - 1) * (-1.1); i<spaceship.numberOfGun; i++, j+=6, k+=2) {
+                fire.push({x:             spaceship.x + 50, 
+                    y:             j, 
+                    dx:            10,
+                    dy:            k,
+                    dimTopSide:    0,
+                    dimRightSide:  10,
+                    dimBottomSide: 0,
+                    dimLeftSide:   0,
+                    status:        true,
+                });
+            }        
         }
     }
 
 // Удаление пуль
     for(i in fire) {
         fire[i].x += fire[i].dx;
-        if(fire[i].x > canvas.width + 10) {
+        fire[i].y += fire[i].dy;
+        if(fire[i].x > canvas.width + 10 || fire[i].y < 0 || fire[i].y > canvas.height) {
         fire.splice(i,1);
         }
     }
