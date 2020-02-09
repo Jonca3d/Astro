@@ -60,7 +60,9 @@ let spaceship = {
     status:        true,
     helth:         100,
     numberOfGun:   4,
+    speedOfBullets:10,
     attackAngle:   true, // если true, то пули разлетаются веером
+    frequency:     60,
     luck:          50, // Вероятность выпадения бонуса после уничтожения врага
 }
 
@@ -702,7 +704,10 @@ for(i in upgrade) {
         }
         if(intersectionOfObjects(spaceship, bonusFrequency[i])) {
             bonusFrequency[i].del = true;
-            // TO DO: написать код для воздействия этого бонуса на корабль
+            spaceship.frequency -= 5;
+            if(spaceship.frequency < 5) {
+                spaceship.frequency = 5;
+            }
         }
         if (bonusFrequency[i].del) bonusFrequency.splice(i,1);
     }
@@ -724,7 +729,7 @@ for(i in upgrade) {
 } // конец перебора аптечек
 
     // Генерация пуль
-    if(renderIterations.iteration % 60 == 0 && gameOverStatus == false) {
+    if(renderIterations.iteration % spaceship.frequency == 0 && gameOverStatus == false) {
         if(!spaceship.attackAngle) {
             for(let i=0, j = spaceship.y - 3 * (spaceship.numberOfGun - 1); i<spaceship.numberOfGun; i++, j+=6) {
                 fire.push({x:             spaceship.x + 50, 
