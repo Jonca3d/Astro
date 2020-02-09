@@ -692,7 +692,7 @@ for(i in upgrade) {
         }
         if(intersectionOfObjects(spaceship, bonusSpeed[i])) {
             bonusSpeed[i].del = true;
-            // TO DO: написать код для воздействия этого бонуса на корабль
+            spaceship.speedOfBullets += 5;
         }
         if (bonusSpeed[i].del) bonusSpeed.splice(i,1);
     }
@@ -734,7 +734,7 @@ for(i in upgrade) {
             for(let i=0, j = spaceship.y - 3 * (spaceship.numberOfGun - 1); i<spaceship.numberOfGun; i++, j+=6) {
                 fire.push({x:             spaceship.x + 50, 
                     y:             j, 
-                    dx:            10,
+                    dx:            spaceship.speedOfBullets,
                     dy:            0,
                     dimTopSide:    0,
                     dimRightSide:  10,
@@ -747,7 +747,7 @@ for(i in upgrade) {
             for(let i=0, j = spaceship.y - 3 * (spaceship.numberOfGun - 1), k = (spaceship.numberOfGun - 1) * (-1.1); i<spaceship.numberOfGun; i++, j+=6, k+=2) {
                 fire.push({x:             spaceship.x + 50, 
                     y:             j, 
-                    dx:            10,
+                    dx:            spaceship.speedOfBullets,
                     dy:            k,
                     dimTopSide:    0,
                     dimRightSide:  10,
