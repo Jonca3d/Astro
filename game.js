@@ -1,6 +1,7 @@
 const COLOR_BLACK           = "#000000";
 const COLOR_WHITE           = "#FFFFFF";
 const COLOR_GRAY            = "#666666";
+const COLOR_DARK_GREY       = "#303030";
 const COLOR_GREEN           = "#00FF00";
 const COLOR_RED             = "#FF0000";
 const COLOR_DARK_RED        = "#8B0000";
@@ -14,7 +15,7 @@ let ctx    =  canvas.getContext("2d");
 // Переменные для работы с Progressbar
 let time             =  { value: 0 }; // Относительное игровое время. Значение time соответствует длине Progressbar в пикселях
 let renderIterations =  { iteration: 0 }; // Подсчитывает количество перерисовок canvas
-let levelLength      =  2; // Значение влияет на скорость заполнения Progressbar. Чем выше значение тем медленее заполняется шкала
+let levelLength      =  1; // Значение влияет на скорость заполнения Progressbar. Чем выше значение тем медленее заполняется шкала
 
 let menu             =  ["Start / Resume", "Restart"];
 let selectedMenuItem =  0;
@@ -24,12 +25,12 @@ let pressKeyEnter    =  false;
 
 let menuStatus          =  true; // Если значение true то неоюходимо открыть меню и приостановить игру
 let gameOverStatus      =  false;
-let levelCompleteStatus =  false;
+let levelCompleteStatus =  true;
 
 let numberOfStars = 10;
 let stars = [];
 
-let numberOfAsteroids = 100;
+let numberOfAsteroids = 20;
 let asteroids =[];
 
 let numberOfAidKit = 1;
@@ -64,12 +65,13 @@ let spaceship = {
 }
 
 let bossLevelOne = {
-  x:       500,
-  y:       200,
-  color:   COLOR_WHITE,
-  helth:   100,
-  status:  true,
-  del:     false,
+  x:           canvas.width + 80,
+  y:           200,
+  color:       COLOR_WHITE,
+  helth:       400,
+  startAction: false, // параметр для появления появления босса, пока False бос не атакует, а идет всупительная анимация
+  status:      true,
+  del:         false,
 }
 
 function restartGame() {
@@ -242,6 +244,7 @@ function chance() {
 function levelComplete() {
   console.log("Level_Complete");
   levelCompleteStatus = true;
+  bossLevelOne.status = true;
 }
 
 function drawUpgrade() {
@@ -454,6 +457,23 @@ function drawBossLevel() {
     ctx.beginPath();
     ctx.arc(bossLevelOne.x + 20, bossLevelOne.y , 20, 0, Math.PI*2, true);
     ctx.fill();
+    ctx.fillStyle = COLOR_BLACK;
+    ctx.beginPath();
+    ctx.arc(bossLevelOne.x - 20, bossLevelOne.y - 50, 7, 0, Math.PI*2, true);
+    ctx.fill();
+    ctx.fillStyle = COLOR_DARK_GREY;
+    ctx.beginPath();
+    ctx.arc(bossLevelOne.x - 20, bossLevelOne.y - 50, 6, 0, Math.PI*2, true);
+    ctx.fill();
+    ctx.fillStyle = COLOR_BLACK;
+    ctx.beginPath();
+    ctx.arc(bossLevelOne.x - 20, bossLevelOne.y + 53, 7, 0, Math.PI*2, true);
+    ctx.fill();
+    ctx.fillStyle = COLOR_DARK_GREY;
+    ctx.beginPath();
+    ctx.arc(bossLevelOne.x - 20, bossLevelOne.y + 53, 6, 0, Math.PI*2, true);
+    ctx.fill();
+  
   }
 }
 
@@ -493,6 +513,23 @@ function updatetStateOfMovingObj(movingObj) {
   }
 }
 
+function updateStateOfBoss() {
+  if(!bossLevelOne.startAction) {
+    bossLevelOne.x -= 1;
+    if(bossLevelOne.x < canvas.width - 200) bossLevelOne.startAction = true;
+  } else {
+    if(bossLevelOne.helth > 300) {
+      
+    } else if(bossLevelOne.helth > 200) {
+      
+    } else if(bossLevelOne.helth > 100) {
+      
+    } else {
+      
+    }
+  }
+}
+
 function intersectionOfObjects(objOne, objTwo) {
   if(objOne.x + objOne.dimRightSide   >  objTwo.x - objTwo.dimLeftSide
      && objOne.x - objOne.dimLeftSide    <  objTwo.x + objTwo.dimRightSide
@@ -515,9 +552,8 @@ function update() {
   if (menuStatus) {
     mainMenu();
   } else {
-    // Движение звезд на заднем плане
-    for(i in stars) {
-      if(!levelCompleteStatus) {
+    if(!levelCompleteStatus) {
+      for(i in stars) {
         if(stars[i].x > -5) {
           stars[i].x -= stars[i].speed;
         } else {
@@ -525,13 +561,24 @@ function update() {
           stars[i].y = randomeInteger(0, canvas.height);
         }
       }
-    }
-
+    } else {
+      for(i in asteroids) {
+        if(asteroids[i].y < canvas.height / 2) {
+          asteroids[i].y -= 3;
+        } else {
+          asteroids[i].y += 3;
+        }
+      }     
+      
+      updateStateOfBoss();
+      
+    } // if(!levelCompleteStatus)   
+    
     // Проверка столкновения астероидов с кораблем и пулями
     // Проверка времени создания астероидов
     for (i in asteroids) {
       updatetStateOfMovingObj(asteroids[i]);
-    
+      
       if (intersectionOfObjects(spaceship, asteroids[i])) {
         asteroids[i].helth -= 1;
         spaceship.helth -= 1;
@@ -543,7 +590,8 @@ function update() {
           gameOverStatus = true;            
         }        
       }
-        
+      
+      
       // Проверка столкновения астроида с каждей пулей
       for (j in fire) {
         if (intersectionOfObjects(fire[j], asteroids[i])) {
@@ -604,10 +652,11 @@ function update() {
       }
       if (asteroids[i].del) asteroids.splice(i,1);
     } // Конец перебора астероидов
-
-// Перебор юнитов бонус-upgrade
+    
+    
+    // Перебор юнитов бонус-upgrade
     for(i in upgrade) {
-
+      
       if (!upgrade[i].status && upgrade[i].appearanceTime == time.value) {
         upgrade[i].status = true;
       }
@@ -616,55 +665,56 @@ function update() {
         if(upgrade[i].y >= upgrade[i].startY + 5 || upgrade[i].y <= upgrade[i].startY - 5) upgrade[i].move *= -1;
         upgrade[i].y += upgrade[i].move;
         if(upgrade[i].tail1Y > upgrade[i].y) {
-            upgrade[i].tail1Y -= 0.6;
+          upgrade[i].tail1Y -= 0.6;
         } else if(upgrade[i].tail1Y < upgrade[i].y){
-            upgrade[i].tail1Y += 0.6;
+          upgrade[i].tail1Y += 0.6;
         }
         if(upgrade[i].tail2Y > upgrade[i].tail1Y) {
-            upgrade[i].tail2Y -= 0.5;
+          upgrade[i].tail2Y -= 0.5;
         } else if(upgrade[i].tail2Y < upgrade[i].tail1Y){
-            upgrade[i].tail2Y += 0.5;
+          upgrade[i].tail2Y += 0.5;
         }
         if(upgrade[i].tail3Y > upgrade[i].tail2Y) {
-            upgrade[i].tail3Y -= 0.4;
+          upgrade[i].tail3Y -= 0.4;
         } else if(upgrade[i].tail3Y < upgrade[i].tail2Y){
-            upgrade[i].tail3Y += 0.4;
+          upgrade[i].tail3Y += 0.4;
         }
         if(upgrade[i].tail4Y > upgrade[i].tail3Y) {
-            upgrade[i].tail4Y -= 0.3;
+          upgrade[i].tail4Y -= 0.3;
         } else if(upgrade[i].tail4Y < upgrade[i].tail3Y){
-            upgrade[i].tail4Y += 0.3;
+          upgrade[i].tail4Y += 0.3;
         }
         if(upgrade[i].tail5Y > upgrade[i].tail4Y) {
-            upgrade[i].tail5Y -= 0.2;
+          upgrade[i].tail5Y -= 0.2;
         } else if(upgrade[i].tail5Y < upgrade[i].tail4Y){
-            upgrade[i].tail5Y += 0.2;
+          upgrade[i].tail5Y += 0.2;
         }
-
+        
         upgrade[i].x  -= upgrade[i].speed;
         upgrade[i].tail1X -= upgrade[i].speed;
         upgrade[i].tail2X -= upgrade[i].speed;
         upgrade[i].tail3X -= upgrade[i].speed;
         upgrade[i].tail4X -= upgrade[i].speed;
         upgrade[i].tail5X -= upgrade[i].speed;
-
+        
         if (upgrade[i].x == -60) upgrade[i].del = true;
       }
-
+      
       if(intersectionOfObjects(spaceship, upgrade[i]) ) {
         spaceship.numberOfGun++;
         upgrade[i].del = true;
       }
-
+      
       if(upgrade[i].del) upgrade.splice(i,1);
     } // Конец перебора бонуса upgrade    
-
+    
+    
     for(i in bonusAngle) {
       updatetStateOfMovingObj(bonusAngle[i]);
       if (bonusAngle[i].x < -40) {
         bonusAngle[i].del = true;
       }
-        
+      
       if(intersectionOfObjects(spaceship, bonusAngle[i])) {
         bonusAngle[i].del = true;
         if(spaceship.attackAngle) {
@@ -675,7 +725,8 @@ function update() {
       }
       if (bonusAngle[i].del) bonusAngle.splice(i,1);
     }
-
+    
+    
     for(i in bonusSpeed) {
       updatetStateOfMovingObj(bonusSpeed[i]);
       if (bonusSpeed[i].x < -40) {
@@ -687,7 +738,8 @@ function update() {
       }
       if (bonusSpeed[i].del) bonusSpeed.splice(i,1);
     }
-
+    
+    
     for(i in bonusFrequency) {
       updatetStateOfMovingObj(bonusFrequency[i]);
       if (bonusFrequency[i].x < -40) {
@@ -702,22 +754,24 @@ function update() {
       }
       if (bonusFrequency[i].del) bonusFrequency.splice(i,1);
     }
-
+    
+    
     // Перебор аптечек
     for(i in aidKit) {
       updatetStateOfMovingObj(aidKit[i]);
-
+      
       if (intersectionOfObjects(spaceship, aidKit[i])) {
         aidKit[i].del = true;
         spaceship.helth += aidKit[i].helth;
       }
-
+      
       if ( aidKit[i].x < -40 ) {
         aidKit[i].del = true;
       }
       if (aidKit[i].del) aidKit.splice(i,1);
     } // конец перебора аптечек
-
+    
+    
     // Генерация пуль
     if(renderIterations.iteration % spaceship.frequency == 0 && gameOverStatus == false) {
       if(!spaceship.attackAngle) {
@@ -749,23 +803,24 @@ function update() {
           });
         }        
       }
-    }
-
-    // Удаление пуль
+    } // Конец генерации пуль
+    
+    
+    // Движение и удаление пуль
     for(i in fire) {
       fire[i].x += fire[i].dx;
       fire[i].y += fire[i].dy;
       if(fire[i].x > canvas.width + 10 || fire[i].y < 0 || fire[i].y > canvas.height) {
         fire.splice(i,1);
       }
-    }
-
+    } 
+    
     if(time.value == canvas.width) {
       levelComplete();
     }
-
-    calculateProgress(levelLength, time);
-  }
+    
+    calculateProgress(levelLength, time);  
+  } // if(menuStatus)
 } // function update()
 
 function draw() {
@@ -773,13 +828,14 @@ function draw() {
   // Задний фон
   drawFillBackground();
   drawStars();
-  drawAsteroids();
+  //drawAsteroids();
   drawFire();
-  drawAidKit();
-  drawBonusAngle();
-  drawBonusSpeed();
-  drawBonusFrequency();
+  //drawAidKit();
+  //drawBonusAngle();
+  //drawBonusSpeed();
+  //drawBonusFrequency();
   drawProgressbar(time.value);
+  drawBossLevel();
 
   if (menuStatus) {
     drawMenu();
@@ -790,7 +846,7 @@ function draw() {
     drawSpaceship();
     drawTextScore();
     drawTextHelth();
-    drawUpgrade();
+    //drawUpgrade();
   }
 } // function draw()
 
